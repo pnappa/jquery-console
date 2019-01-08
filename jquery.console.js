@@ -255,7 +255,9 @@
 
     ////////////////////////////////////////////////////////////////////////
     // Handle setting focus
-    container.click(function(){
+    // pnappa: changed this to be document instead, as we're hosting in an iframe
+    // and we want any clicks within the iframe to count
+    $(document).click(function(){
       // Don't mess with the focus if there is an active selection
       if (window.getSelection().toString()) {
         return false;
