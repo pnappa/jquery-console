@@ -692,12 +692,30 @@
             }
     };
 
+      /* return a string containing the completion merged into the promptText */
+      function mergeCompletion(promptText, completion) {
+            // pnappa: added the autocompleteSmart option
+            // doing `wow tx<tab>`, with the result being `txt`, will result in `wow txtxt` with this option
+            if (!config.autocompleteSmart) {
+                extern.promptText(promptText + completion);
+            // with this option, `wow tx<tab>` with a result of `txt` will result in `wow txt`
+            } else if (config.autocompleteSmart) {
+                var argv = promptText.split(' ');
+                // we're autocompleting on the final element, keep the entire suggestion
+                if (argv[argv.length - 1] == '') {
+                    extern.promptText(promptText + completion);
+                } else {
+                    extern.promptText(argv.slice(0, argv.length-1).join(' ') + ' ' + completion);
+                }
+            }
+      }
+
     function doCompleteDirectly() {
       if(typeof config.completeHandle == 'function') {
         var completions = config.completeHandle(promptText);
         var len = completions.length;
         if (len === 1) {
-          extern.promptText(promptText + completions[0]);
+            extern.promptText(mergeCompletion(promptText, completions[0]));
         } else if (len > 1 && config.cols) {
           var prompt = promptText;
           // Compute the number of rows that will fit in the width
@@ -733,10 +751,9 @@
     };
 
     function showCompletion(promptText, completions) {
-
             var len = completions.length;
             if (len === 1) {
-                    extern.promptText(promptText + completions[0]);
+                extern.promptText(mergeCompletion(promptText, completions[0]));
             } else if (len > 1 && config.cols) {
                     var prompt = promptText;
                     // Compute the number of rows that will fit in the width
