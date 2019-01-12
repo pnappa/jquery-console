@@ -1,6 +1,6 @@
-// JQuery Console 1.0
-// Sun Feb 21 20:28:47 GMT 2010
+// JSConsole 0.69
 //
+// Copyright 2019 Patrick Nappa, forked from chrisdone's jquery-console
 // Copyright 2010 Chris Done, Simon David Pratt. All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -29,17 +29,10 @@
 // ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 
-// TESTED ON
-//   Internet Explorer 6
-//   Opera 10.01
-//   Chromium 4.0.237.0 (Ubuntu build 31094)
-//   Firefox 3.5.8, 3.6.2 (Mac)
-//   Safari 4.0.5 (6531.22.7) (Mac)
-//   Google Chrome 5.0.375.55 (Mac)
-
 (function($){
   var isWebkit = !!~navigator.userAgent.indexOf(' AppleWebKit/');
 
+    // instantiate a console for a div element
   $.fn.console = function(config){
     ////////////////////////////////////////////////////////////////////////
     // Constants
@@ -91,7 +84,7 @@
       85: clearCurrentPrompt
     };
     if(config.ctrlCodes) {
-      $.extend(ctrlCodes, config.ctrlCodes);
+        Object.assign(ctrlCodes, config.ctrlCodes);
     }
     var altCodes = {
       // M-f
@@ -109,11 +102,20 @@
 
     ////////////////////////////////////////////////////////////////////////
     // Globals
+    //var container = element;
     var container = $(this);
-    var inner = $('<div class="jquery-console-inner"></div>');
+    var inner = document.createElement('div');
+    inner.className = "jquery-console-inner";
+
     // erjiang: changed this from a text input to a textarea so we
     // can get pasted newlines
-    var typer = $('<textarea autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" class="jquery-console-typer"></textarea>');
+    var typer = document.createElement('textarea');
+    typer.className = 'jquery-console-typer';
+    ["autocomplete", "autocorrect", "autocapitalize", "spellcheck"].forEach((el) => {
+        typer.setAttribute(el, "off");
+    });
+    typer.className = "jquery-console-typer";
+
     // Prompt
     var promptBox;
     var prompt;
@@ -149,15 +151,16 @@
       extern.promptLabel = config && config.promptLabel? config.promptLabel : "> ";
       container.append(inner);
       inner.append(typer);
-      typer.css({position:'absolute',top:0,left:'-9999px'});
+        typer.classList.add('jquery-console-typer');
+      //typer.css({position:'absolute',top:0,left:'-9999px'});
       if (config.welcomeMessage)
         message(config.welcomeMessage,'jquery-console-welcome');
       newPromptBox();
       if (config.autofocus) {
-        inner.addClass('jquery-console-focus');
+        inner.classList.add('jquery-console-focus');
         typer.focus();
         setTimeout(function(){
-          inner.addClass('jquery-console-focus');
+          inner.classList.add('jquery-console-focus');
           typer.focus();
         },100);
       }
@@ -177,7 +180,7 @@
       var removeElements = function() {
         inner.find('div').each(function(){
           if (!welcome) {
-            $(this).remove();
+              element.parent.removeChild(element);
           } else {
             welcome = false;
           }
@@ -199,7 +202,7 @@
     };
 
     var focusConsole = function() {
-      inner.addClass('jquery-console-focus');
+      inner.classList.add('jquery-console-focus');
       typer.focus();
     };
 
@@ -210,9 +213,17 @@
     ////////////////////////////////////////////////////////////////////////
     // Reset terminal
     extern.notice = function(msg,style){
-      var n = $('<div class="notice"></div>').append($('<div></div>').text(msg))
-        .css({visibility:'hidden'});
-      container.append(n);
+      //var n = $('<div class="notice"></div>').append($('<div></div>').text(msg))
+      //  .css({visibility:'hidden'});
+
+      var n = document.createElement('div');
+        n.classList.add('notice');
+      var subN = document.createElement('div');
+      subN.innerText = msg;
+      n.appendChild(subN);
+
+      n.style.visibility = 'hidden';
+      container.appendChild(n);
       var focused = true;
       if (style=='fadeout')
         setTimeout(function(){
@@ -221,8 +232,21 @@
           });
         },4000);
       else if (style=='prompt') {
-        var a = $('<br/><div class="action"><a href="javascript:">OK</a><div class="clear"></div></div>');
+        var a = document.createElement('br');
+        var adiv = document.createElement('div');
+        adiv.classList.add('action');
+        var adivanchor = document.createElement('a');
+        adivanchor.setAttribute('href', "#");
+        adivanchor.innerText = 'OK';
+        var cleardiv = document.createElement('div');
+        cleardiv.classList.add('clear');
+
+        adiv.appendChild(adivanchor);
+        adiv.appendChild(cleardiv);
+
         n.append(a);
+        n.append(adiv);
+
         focused = false;
         a.click(function(){ n.fadeOut(function(){ n.remove();inner.css({opacity:1}) }); });
       }
@@ -242,10 +266,21 @@
       promptText = '';
       ringn = 0; // Reset the position of the history ring
       enableInput();
-      promptBox = $('<div class="jquery-console-prompt-box"></div>');
-      var label = $('<span class="jquery-console-prompt-label"></span>');
+
+      //promptBox = $('<div class="jquery-console-prompt-box"></div>');
+      promptBox = document.createElement('div');
+      promptBox.classList.add('jquery-console-prompt-box');
+
+      //var label = $('<span class="jquery-console-prompt-label"></span>');
+      var label = document.createElement('span');
+      label.classList.add('jquery-console-prompt-label');
+
+
       var labelText = extern.continuedPrompt? continuedPromptLabel : extern.promptLabel;
+        // TODO: this function onwards....
       promptBox.append(label.text(labelText).show());
+      //label.classList.add('blockdisplay');
+
       label.html(label.html().replace(' ','&nbsp;'));
       prompt = $('<span class="jquery-console-prompt"></span>');
       promptBox.append(prompt);
@@ -263,12 +298,13 @@
         return false;
       }
 
-      inner.addClass('jquery-console-focus');
-      inner.removeClass('jquery-console-nofocus');
+      inner.classList.add('jquery-console-focus');
+      inner.classList.remove('jquery-console-nofocus');
       if (isWebkit) {
         typer.focusWithoutScrolling();
       } else {
-        typer.css('position', 'fixed').focus();
+        typer.classList.add('fixposition'); 
+        typer.focus();
       }
       scrollToBottom();
       return false;
@@ -284,22 +320,21 @@
     ////////////////////////////////////////////////////////////////////////
     // Bind to the paste event of the input box so we know when we
     // get pasted data
-    typer.bind('paste', function(e) {
+    typer.onpaste = function(e) {
       // wipe typer input clean just in case
-      typer.val("");
+      typer.value = "";
       // this timeout is required because the onpaste event is
       // fired *before* the text is actually pasted
       setTimeout(function() {
-        typer.consoleInsert(typer.val());
-        typer.val("");
+        typer.consoleInsert(typer.value);
+        typer.value = '';
       }, 0);
-    });
+    };
 
     ////////////////////////////////////////////////////////////////////////
     // Handle key hit before translation
     // For picking up control characters like up/left/down/right
-
-    typer.keydown(function(e){
+    typer.onkeydown = function(e){
       cancelKeyPress = 0;
       var keyCode = e.keyCode;
       // C-c: cancel the execution
@@ -327,11 +362,11 @@
           return false;
         }
       }
-    });
+    };
 
     ////////////////////////////////////////////////////////////////////////
     // Handle key press
-    typer.keypress(function(e){
+      typer.onkeypress = function(e){
       var keyCode = e.keyCode || e.which;
       if (isIgnorableKey(e)) {
         return false;
@@ -352,7 +387,7 @@
         }
       }
       if (isWebkit) return false;
-    });
+    };
 
     function isIgnorableKey(e) {
       // for now just filter alt+tab that we receive on some platforms when
@@ -433,9 +468,25 @@
         extern.promptText("");
     };
 
+    // TODO (pnappa): optimise this more, my vanilla-js version explicitly iterates over
+      // each children and checks its contains a class
+      // a better way is to use queryselectorall, i think..?
     function clearScreen() {
-        inner.children(".jquery-console-prompt-box, .jquery-console-message").slice(0, -1).remove();
-        extern.report(" ");
+        // inner.children(".jquery-console-prompt-box, .jquery-console-message").slice(0, -1).remove();
+
+        var to_remove = [];
+        for (var i = 0; i < inner.children.length; ++i) {
+            if (inner.children[i].classList.contains('jquery-console-prompt-box') && inner.children.classList.contains('jquery-console-message')) {
+                to_remove.push(inner.children[i]);
+            }
+        }
+
+        // don't remove the last prompt
+        for (var i = 0; i < to_remove.length - 1; ++i) {
+            inner.removeChild(inner.children[i]);
+        }
+        
+        report(extern, ' ');
         extern.focus();
     };
 
@@ -490,17 +541,7 @@
 
     // Scroll to the bottom of the view
     function scrollToBottom() {
-      var version = jQuery.fn.jquery.split('.');
-      var major = parseInt(version[0]);
-      var minor = parseInt(version[1]);
-
-      // check if we're using jquery > 1.6
-      if ((major == 1 && minor > 6) || major > 1) {
-        inner.prop({ scrollTop: inner.prop("scrollHeight") });
-      }
-      else {
-        inner.attr({ scrollTop: inner.attr("scrollHeight") });
-      }
+        inner.setAttribute('scrollTop', inner.getAttribute('scrollHeight'));
     };
 
     function cancelExecution() {
@@ -588,11 +629,16 @@
     ////////////////////////////////////////////////////////////////////////
     // Display a message
     function message(msg,className) {
-      var mesg = $('<div class="jquery-console-message"></div>');
-      if (className) mesg.addClass(className);
-      mesg.filledText(msg).hide();
+        var mesg = document.createElement('div');
+        mesg.classList.add('jquery-console-message');
+      if (className) {
+          mesg.classList.add(className);
+      }
+      filledText(mesg, msg);
+      // cheeky way to emulate jquery .hide() without inline css
+      mesg.classList.add('hide');
       inner.append(mesg);
-      mesg.show();
+      mesg.classList.remove('hide');
     };
 
     ////////////////////////////////////////////////////////////////////////
@@ -838,12 +884,18 @@
 
     return extern;
   };
-  // Simple utility for printing messages
-  $.fn.filledText = function(txt){
-    $(this).text(txt);
-    $(this).html($(this).html().replace(/\t/g, '&nbsp;&nbsp;').replace(/\n/g,'<br/>'));
-    return this;
-  };
+
+  function filledText(element, txt) {
+      // set the text, but now replace tabs and newlines with html equivalents
+    element.innerText = txt;
+    element.innerHTML = element.innerHTML.replace(/\t/g, '&nbsp;&nbsp;').replace(/\n/g,'<br/>');
+  }
+  //// Simple utility for printing messages
+  //$.fn.filledText = function(txt){
+  //  $(this).text(txt);
+  //  $(this).html($(this).html().replace(/\t/g, '&nbsp;&nbsp;').replace(/\n/g,'<br/>'));
+  //  return this;
+  //};
 
   // Alternative method for focus without scrolling
   $.fn.focusWithoutScrolling = function(){
