@@ -151,7 +151,6 @@
             container.append(inner);
             inner.append(typer);
             typer.classList.add('jquery-console-typer');
-            //typer.css({position:'absolute',top:0,left:'-9999px'});
             if (config.welcomeMessage)
                 message(config.welcomeMessage, 'jquery-console-welcome');
             newPromptBox();
@@ -211,9 +210,6 @@
         ////////////////////////////////////////////////////////////////////////
         // Reset terminal
         extern.notice = function(msg, style) {
-            //var n = $('<div class="notice"></div>').append($('<div></div>').text(msg))
-            //  .css({visibility:'hidden'});
-
             var n = document.createElement('div');
             n.classList.add('notice');
             var subN = document.createElement('div');
@@ -279,11 +275,9 @@
             ringn = 0; // Reset the position of the history ring
             enableInput();
 
-            //promptBox = $('<div class="jquery-console-prompt-box"></div>');
             promptBox = document.createElement('div');
             promptBox.classList.add('jquery-console-prompt-box');
 
-            //var label = $('<span class="jquery-console-prompt-label"></span>');
             var label = document.createElement('span');
             label.classList.add('jquery-console-prompt-label');
 
@@ -304,6 +298,7 @@
         // Handle setting focus
         // pnappa: changed this to be document instead, as we're hosting in an iframe
         // and we want any clicks within the iframe to count
+        // TODO: add this as a config setting
         $(document).click(function() {
             // Don't mess with the focus if there is an active selection
             if (window.getSelection().toString()) {
@@ -484,7 +479,6 @@
         // each children and checks its contains a class
         // a better way is to use queryselectorall, i think..?
         function clearScreen() {
-            // inner.children(".jquery-console-prompt-box, .jquery-console-message").slice(0, -1).remove();
 
             var to_remove = [];
             for (var i = 0; i < inner.children.length; ++i) {
@@ -900,17 +894,12 @@
         return extern;
     };
 
+    // Simple utility for printing messages
     function filledText(element, txt) {
         // set the text, but now replace tabs and newlines with html equivalents
         element.innerText = txt;
         element.innerHTML = element.innerHTML.replace(/\t/g, '&nbsp;&nbsp;').replace(/\n/g, '<br/>');
     }
-    //// Simple utility for printing messages
-    //$.fn.filledText = function(txt){
-    //  $(this).text(txt);
-    //  $(this).html($(this).html().replace(/\t/g, '&nbsp;&nbsp;').replace(/\n/g,'<br/>'));
-    //  return this;
-    //};
 
     // Alternative method for focus without scrolling
     $.fn.focusWithoutScrolling = function() {
