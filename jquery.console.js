@@ -170,26 +170,50 @@
             extern.clearScreen = clearScreen;
         })();
 
+
+        function elementFadeOut(el, callback, keepcallback) {
+            // this is called when the fade finishes
+            el.onanimationend = () => {
+                if (!keepcallback) {
+                    el.onanimationend = undefined;
+                }
+
+                callback();
+            };
+            // start the animation
+            el.classList.add('fadeout');
+        }
+
         ////////////////////////////////////////////////////////////////////////
         // Reset terminal
         extern.reset = function() {
             var welcome = (typeof config.welcomeMessage != 'undefined');
 
             var removeElements = function() {
-                inner.find('div').each(function() {
+                var dupChildren = Array.from(inner.children);
+                for (var i = 0; i < dupChildren.length; ++i) {
+                    var el = dupChildren[i];
+
+                    // ..following the previous code only applying to divs?
+                    // XXX: currently unaware of why, also should lowercase it?
+                    if (el.tagName != 'DIV') continue; 
+
+                    // XXX: this seems hacky, inherited from previous code
+                    // what if the welcome isn't the first element?
                     if (!welcome) {
-                        element.parent.removeChild(element);
+                        el.parentElement.removeChild(el);
                     } else {
                         welcome = false;
                     }
-                });
+                }
             };
 
             if (fadeOnReset) {
-                inner.parent().fadeOut(function() {
+                elementFadeOut(inner.parentElement, () => {
                     removeElements();
                     newPromptBox();
-                    inner.parent().fadeIn(focusConsole);
+                    inner.parentElement.classList.remove('fadeout');
+                    inner.parentElement.classList.add('fadein');
                 });
             } else {
                 removeElements();
@@ -199,6 +223,7 @@
         };
 
         var focusConsole = function() {
+            // XXX: why isn't the jquery-console-nofocus removed?
             inner.classList.add('jquery-console-focus');
             typer.focus();
         };
@@ -226,6 +251,7 @@
                     });
                 }, 4000);
             else if (style == 'prompt') {
+                // XXX: surely there's better ways to do this
                 var a = document.createElement('br');
                 var adiv = document.createElement('div');
                 adiv.classList.add('action');
