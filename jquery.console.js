@@ -277,11 +277,7 @@
 
 
       var labelText = extern.continuedPrompt? continuedPromptLabel : extern.promptLabel;
-        // TODO: this function onwards....
         label.innerText = labelText;
-        label.classList.remove('hide');
-        label.classList.add('blockdisplay');
-
         promptBox.append(label);
 
       label.innerHTML = label.innerHTML.replace(' ', '&nbsp;');
