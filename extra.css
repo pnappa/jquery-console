@@ -17,6 +17,6 @@
 }
 
 .blockdisplay {
-    display: block;
+    display: inline-block;
 }
 

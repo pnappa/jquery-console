@@ -278,11 +278,15 @@
 
       var labelText = extern.continuedPrompt? continuedPromptLabel : extern.promptLabel;
         // TODO: this function onwards....
-      promptBox.append(label.text(labelText).show());
-      //label.classList.add('blockdisplay');
+        label.innerText = labelText;
+        label.classList.remove('hide');
+        label.classList.add('blockdisplay');
 
-      label.html(label.html().replace(' ','&nbsp;'));
-      prompt = $('<span class="jquery-console-prompt"></span>');
+        promptBox.append(label);
+
+      label.innerHTML = label.innerHTML.replace(' ', '&nbsp;');
+      prompt = document.createElement('span');
+      prompt.classList.add('jquery-console-prompt');
       promptBox.append(prompt);
       inner.append(promptBox);
       updatePromptDisplay();
@@ -476,14 +480,14 @@
 
         var to_remove = [];
         for (var i = 0; i < inner.children.length; ++i) {
-            if (inner.children[i].classList.contains('jquery-console-prompt-box') && inner.children.classList.contains('jquery-console-message')) {
+            if (inner.children[i].classList.contains('jquery-console-prompt-box') || inner.children[i].classList.contains('jquery-console-message')) {
                 to_remove.push(inner.children[i]);
             }
         }
 
         // don't remove the last prompt
         for (var i = 0; i < to_remove.length - 1; ++i) {
-            inner.removeChild(inner.children[i]);
+            inner.removeChild(to_remove[i]);
         }
         
         report(extern, ' ');
@@ -604,7 +608,10 @@
     function commandResult(msg,className) {
       column = -1;
       updatePromptDisplay();
-      if (typeof msg == 'string') {
+      // do nothing if no msg
+      if (msg === undefined) {
+          
+      } else if (typeof msg == 'string') {
         message(msg,className);
       } else if ($.isArray(msg)) {
         for (var x in msg) {
@@ -864,7 +871,7 @@
         var after = line.substring(column+1);
         html = htmlEncode(before) + current + htmlEncode(after);
       }
-      prompt.html(html);
+      prompt.innerHTML = html;
       scrollToBottom();
     };
 
