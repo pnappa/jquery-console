@@ -492,7 +492,7 @@
                 inner.removeChild(to_remove[i]);
             }
 
-            report(extern, ' ');
+            extern.report(' ');
             extern.focus();
         };
 
