@@ -28,11 +28,11 @@
 // LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
 // ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
-(function($) {
+(function() {
     var isWebkit = !!~navigator.userAgent.indexOf(' AppleWebKit/');
 
     // instantiate a console for a div element
-    $.fn.console = function(config) {
+    makeConsole = function(forEl, config) {
         ////////////////////////////////////////////////////////////////////////
         // Constants
         // Some are enums, data types, others just for optimisation
@@ -102,7 +102,7 @@
         ////////////////////////////////////////////////////////////////////////
         // Globals
         //var container = element;
-        var container = $(this);
+        var container = forEl;
         var inner = document.createElement('div');
         inner.className = "jquery-console-inner";
 
@@ -328,7 +328,7 @@
         // pnappa: changed this to be document instead, as we're hosting in an iframe
         // and we want any clicks within the iframe to count
         // TODO: add this as a config setting
-        $(document).click(function() {
+        document.addEventListener('click', function() {
             // Don't mess with the focus if there is an active selection
             if (window.getSelection().toString()) {
                 return false;
@@ -337,7 +337,7 @@
             inner.classList.add('jquery-console-focus');
             inner.classList.remove('jquery-console-nofocus');
             if (isWebkit) {
-                typer.focusWithoutScrolling();
+                focusWithoutScrolling(typer);
             } else {
                 typer.classList.add('fixposition');
                 typer.focus();
@@ -928,10 +928,10 @@
     }
 
     // Alternative method for focus without scrolling
-    $.fn.focusWithoutScrolling = function() {
+    function focusElementWithoutScrolling(element) {
         var x = window.scrollX,
             y = window.scrollY;
-        $(this).focus();
+        element.focus();
         window.scrollTo(x, y);
     };
-})(jQuery);
+})();
