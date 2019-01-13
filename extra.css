@@ -1,6 +1,3 @@
-
-// supporting my jquery removal in jquery-console
-// i need this so that I don't set css inline (my CSP disallows this)
 .jquery-console-typer {
    position: absolute;
   top: 0;

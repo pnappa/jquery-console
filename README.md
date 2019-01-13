@@ -1,25 +1,25 @@
-# jquery-console
+# js-console
 
-A terminal emulator for making command consoles written in JavaScript
-with jQuery.
+A terminal emulator for making command consoles written in JavaScript, [originally written in jQuery as jquery-console](https://github.com/chrisdone/jquery-console).
 
 See
-[LICENSE](https://github.com/chrisdone/jquery-console/blob/master/LICENSE)
+[LICENSE](https://github.com/pnappa/jquery-console/blob/master/LICENSE)
 for the license.
 
 ## Example
 
 For a list of examples, see
-[the demo file](https://github.com/chrisdone/jquery-console/blob/master/demo.html),
+[the demo file](https://github.com/pnappa/jquery-console/blob/master/demo.html),
 and for a live demo, see
-[live demo](http://chrisdone.com/jquery-console/) on my home page.
+[live demo](http://pat.sh/extras/jquery-console/) on my home page.
 
 Simple example:
 
 ``` javascript
-var container = $('<div class="console">');
-$('body').append(container);
-var controller = container.console({
+var container = document.createElement('div');
+container.className = 'console';
+document.querySelector('body').append(container);
+var controller = window.makeConsole(container, {
   promptLabel: 'Demo> ',
   commandValidate:function(line){
     if (line == "") return false;

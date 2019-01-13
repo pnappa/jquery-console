@@ -32,7 +32,7 @@
     var isWebkit = !!~navigator.userAgent.indexOf(' AppleWebKit/');
 
     // instantiate a console for a div element
-    makeConsole = function(forEl, config) {
+    window.makeConsole = function(forEl, config) {
         ////////////////////////////////////////////////////////////////////////
         // Constants
         // Some are enums, data types, others just for optimisation
@@ -110,7 +110,7 @@
         // can get pasted newlines
         var typer = document.createElement('textarea');
         typer.className = 'jquery-console-typer';
-        ["autocomplete", "autocorrect", "autocapitalize", "spellcheck"].forEach((el) => {
+        ["autocomplete", "autocorrect", "autocapitalize", "spellcheck"].forEach(function (el) {
             typer.setAttribute(el, "off");
         });
         typer.className = "jquery-console-typer";
@@ -174,7 +174,7 @@
         // jQuery animation helper
         function elementAnimate(el, animationClass, callback, keepcallback) {
             // this is called when the fade finishes
-            var endAnimFn = () => {
+            var endAnimFn = function () {
                 console.log("endanim");
                 if (!keepcallback) {
                     el.removeEventListener('animationend', endAnimFn);
@@ -214,7 +214,7 @@
 
             if (fadeOnReset) {
                 // fade out, then fade back in, and inbetween clear the screen
-                elementAnimate(inner.parentElement, 'fadeout', () => {
+                elementAnimate(inner.parentElement, 'fadeout', function () {
                     removeElements();
                     newPromptBox();
                     inner.parentElement.classList.remove('fadeout');
@@ -252,7 +252,7 @@
             var focused = true;
             if (style == 'fadeout')
                 setTimeout(function() {
-                    elementAnimate(n, 'fadeout', () => {
+                    elementAnimate(n, 'fadeout', function () {
                         // deleet urself
                         n.parentElement.removeChild(n);
                     });
@@ -285,7 +285,7 @@
             n.classList.remove('invisible');
 
             // XXX: this currently doesn't work, am looking into how to do this in css
-            elementAnimate(n, 'uncovertop', () => {
+            elementAnimate(n, 'uncovertop', function () {
                 console.log("finished uncovering");
                 if (!focused) {
                     inner.classList.add('halfvisible');
