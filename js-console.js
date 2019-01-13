@@ -32,8 +32,7 @@
     var isWebkit = !!~navigator.userAgent.indexOf(' AppleWebKit/');
 
     // factor out the css magic strings, uglifyjs will compress these down
-    // TODO: replace jquery-console with js-console
-    var cssPrefix = 'jquery-console-';
+    var cssPrefix = 'js-console-';
     var cursorCSSClass = cssPrefix + 'cursor';
     var innerCSSClass = cssPrefix + 'inner';
     var typerCSSClass = cssPrefix + 'typer';
@@ -802,10 +801,10 @@
         /* return a string containing the completion merged into the promptText */
         function mergeCompletion(promptText, completion) {
             // pnappa: added the autocompleteSmart option
-            // doing `wow tx<tab>`, with the result being `txt`, will result in `wow txtxt` with this option
+            // doing `wow tx<tab>`, with the result being `txt`, will result in `wow txtxt` without autocompleteSmart
             if (!config.autocompleteSmart) {
                 extern.promptText(promptText + completion);
-                // with this option, `wow tx<tab>` with a result of `txt` will result in `wow txt`
+            // with this option, `wow tx<tab>` with a result of `txt` will result in `wow txt`
             } else if (config.autocompleteSmart) {
                 var argv = promptText.split(' ');
                 // we're autocompleting on the final element, keep the entire suggestion

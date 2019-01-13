@@ -1,5 +1,5 @@
 ## UNDER CONSTRUCTION, BE CAREFUL
- - [ ] Rename the CSS
+ - [X] Rename the CSS
  - [ ] Rewrite the demo page
  - [ ] Upload the demo/licensing to my site
  - [ ] Add instructions
@@ -7,7 +7,6 @@
  - [ ] Tests..? Hard to do for this + diminishing return
 
 # js-console
-
 
 A terminal emulator for making command consoles written in vanilla JavaScript, [originally written in jQuery as jquery-console](https://github.com/chrisdone/jquery-console). In addition to removing jQuery, I have removed all inline JS, and inline CSS styles, so this library will still work even with strict Content Security Policies.
 
@@ -36,9 +35,9 @@ var controller = window.makeConsole(container, {
   },
   commandHandle:function(line){
       return [{msg:"=> [12,42]",
-               className:"jquery-console-message-value"},
+               className:"js-console-message-value"},
               {msg:":: [a]",
-               className:"jquery-console-message-type"}]
+               className:"js-console-message-type"}]
   },
   autofocus:true,
   animateScroll:true,
@@ -55,23 +54,23 @@ Some CSS for your console:
 
 ``` css
 div.console { font-size: 14px }
-div.console div.jquery-console-inner
+div.console div.js-console-inner
  { width:900px; height:200px; background:#333; padding:0.5em;
    overflow:auto }
-div.console div.jquery-console-prompt-box
+div.console div.js-console-prompt-box
  { color:#fff; font-family:monospace; }
-div.console div.jquery-console-focus span.jquery-console-cursor
+div.console div.js-console-focus span.js-console-cursor
  { background:#fefefe; color:#333; font-weight:bold }
-div.console div.jquery-console-message-error
+div.console div.js-console-message-error
  { color:#ef0505; font-family:sans-serif; font-weight:bold;
    padding:0.1em; }
-div.console div.jquery-console-message-value
+div.console div.js-console-message-value
  { color:#1ad027; font-family:monospace;
    padding:0.1em; }
-div.console div.jquery-console-message-type
+div.console div.js-console-message-type
  { color:#52666f; font-family:monospace;
    padding:0.1em; }
-div.console span.jquery-console-prompt-label { font-weight:bold }
+div.console span.js-console-prompt-label { font-weight:bold }
 ```
 
 ## Usage options
