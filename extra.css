@@ -7,6 +7,9 @@
   left: -9999px; 
 }
 
+.invisible {
+    visibility: hidden;
+}
 
 .hide {
     display: none;
@@ -54,3 +57,26 @@
 
 }
 
+@keyframes uncovertop {
+    from {
+        height: 0px;
+    }
+
+    to {
+        height: 20px;
+    }
+}
+
+.uncovertop {
+    animation-name: uncovertop;
+    animation-duration: 1s;
+    animation-fill-mode: forwards;
+}
+
+.defaultcursor {
+    cursor: default;
+}
+
+.halfvisible {
+    opacity: 50%;
+}

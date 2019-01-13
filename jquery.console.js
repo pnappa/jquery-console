@@ -171,17 +171,21 @@
         })();
 
 
-        function elementFadeOut(el, callback, keepcallback) {
+        // jQuery animation helper
+        function elementAnimate(el, animationClass, callback, keepcallback) {
             // this is called when the fade finishes
-            el.onanimationend = () => {
+            var endAnimFn = () => {
+                console.log("endanim");
                 if (!keepcallback) {
-                    el.onanimationend = undefined;
+                    el.removeEventListener('animationend', endAnimFn);
                 }
 
                 callback();
             };
+            el.addEventListener('animationend', endAnimFn);
+
             // start the animation
-            el.classList.add('fadeout');
+            el.classList.add(animationClass);
         }
 
         ////////////////////////////////////////////////////////////////////////
@@ -209,12 +213,14 @@
             };
 
             if (fadeOnReset) {
-                elementFadeOut(inner.parentElement, () => {
+                // fade out, then fade back in, and inbetween clear the screen
+                elementAnimate(inner.parentElement, 'fadeout', () => {
                     removeElements();
                     newPromptBox();
                     inner.parentElement.classList.remove('fadeout');
                     inner.parentElement.classList.add('fadein');
                 });
+
             } else {
                 removeElements();
                 newPromptBox();
@@ -233,7 +239,7 @@
         }
 
         ////////////////////////////////////////////////////////////////////////
-        // Reset terminal
+        // provide an alert to the user
         extern.notice = function(msg, style) {
             var n = document.createElement('div');
             n.classList.add('notice');
@@ -241,13 +247,14 @@
             subN.innerText = msg;
             n.appendChild(subN);
 
-            n.style.visibility = 'hidden';
-            container.appendChild(n);
+            n.classList.add("invisible");
+            container.append(n);
             var focused = true;
             if (style == 'fadeout')
                 setTimeout(function() {
-                    n.fadeOut(function() {
-                        n.remove();
+                    elementAnimate(n, 'fadeout', () => {
+                        // deleet urself
+                        n.parentElement.removeChild(n);
                     });
                 }, 4000);
             else if (style == 'prompt') {
@@ -256,7 +263,7 @@
                 var adiv = document.createElement('div');
                 adiv.classList.add('action');
                 var adivanchor = document.createElement('a');
-                adivanchor.setAttribute('href', "#");
+                adivanchor.setAttribute('href', "javascript:");
                 adivanchor.innerText = 'OK';
                 var cleardiv = document.createElement('div');
                 cleardiv.classList.add('clear');
@@ -268,28 +275,24 @@
                 n.append(adiv);
 
                 focused = false;
-                a.click(function() {
-                    n.fadeOut(function() {
-                        n.remove();
-                        inner.css({
-                            opacity: 1
-                        })
-                    });
+                a.addEventListener('click', function() {
+                    console.log('woo');
+                    n.parentElement.removeChild(n);
+                    inner.classList.remove('halfvisible');
                 });
             }
-            var h = n.height();
-            n.css({
-                    height: '0px',
-                    visibility: 'visible'
-                })
-                .animate({
-                    height: h + 'px'
-                }, function() {
-                    if (!focused) inner.css({
-                        opacity: 0.5
-                    });
-                });
-            n.css('cursor', 'default');
+
+            n.classList.remove('invisible');
+
+            // XXX: this currently doesn't work, am looking into how to do this in css
+            elementAnimate(n, 'uncovertop', () => {
+                console.log("finished uncovering");
+                if (!focused) {
+                    inner.classList.add('halfvisible');
+                }
+                inner.classList.remove('uncovertop');
+            });
+            n.classList.add('defaultcursor');
             return n;
         };
 
