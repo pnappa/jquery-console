@@ -348,9 +348,9 @@
 
         ////////////////////////////////////////////////////////////////////////
         // Handle losing focus
-        typer.blur(function() {
-            inner.removeClass('jquery-console-focus');
-            inner.addClass('jquery-console-nofocus');
+        typer.addEventListener('blur', function() {
+            inner.classList.remove('jquery-console-focus');
+            inner.classList.add('jquery-console-nofocus');
         });
 
         ////////////////////////////////////////////////////////////////////////
@@ -639,17 +639,14 @@
         function commandResult(msg, className) {
             column = -1;
             updatePromptDisplay();
-            // do nothing if no msg
-            if (msg === undefined) {
-
-            } else if (typeof msg == 'string') {
+            if (typeof msg == 'string') {
                 message(msg, className);
-            } else if ($.isArray(msg)) {
+            } else if (Array.isArray(msg)) {
                 for (var x in msg) {
                     var ret = msg[x];
                     message(ret.msg, ret.className);
                 }
-            } else { // Assume it's a DOM node or jQuery object.
+            } else if (msg !== undefined) { // Assume it's a DOM node or jQuery object.
                 inner.append(msg);
             }
             newPromptBox();
