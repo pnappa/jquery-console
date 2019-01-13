@@ -32,7 +32,8 @@
     var isWebkit = !!~navigator.userAgent.indexOf(' AppleWebKit/');
 
     // factor out the css magic strings, uglifyjs will compress these down
-    var cssPrefix = 'js-console-';
+    // TODO: replace jquery-console with js-console
+    var cssPrefix = 'jquery-console-';
     var cursorCSSClass = cssPrefix + 'cursor';
     var innerCSSClass = cssPrefix + 'inner';
     var typerCSSClass = cssPrefix + 'typer';
@@ -256,6 +257,7 @@
 
         ////////////////////////////////////////////////////////////////////////
         // provide an alert to the user
+        // XXX: this function is currently broken
         extern.notice = function(msg, style) {
             var n = document.createElement('div');
             n.classList.add('notice');
@@ -279,6 +281,9 @@
                 var adiv = document.createElement('div');
                 adiv.classList.add('action');
                 var adivanchor = document.createElement('a');
+                // TODO: this seems like it might fail CSP,
+                // I *can* add a hash for this though, right? but there's probably
+                // a better way. make it a button instead of <a>?
                 adivanchor.setAttribute('href', "javascript:");
                 adivanchor.innerText = 'OK';
                 var cleardiv = document.createElement('div');
@@ -341,26 +346,31 @@
 
         ////////////////////////////////////////////////////////////////////////
         // Handle setting focus
-        // pnappa: changed this to be document instead, as we're hosting in an iframe
-        // and we want any clicks within the iframe to count
-        // TODO: add this as a config setting
-        document.addEventListener('click', function() {
-            // Don't mess with the focus if there is an active selection
-            if (window.getSelection().toString()) {
-                return false;
-            }
+        // if config.globalCapture is set, the entire document is capturable,
+        // otherwise, it's just the terminal's containing div
+        (function () {
+            var clickEl = container;
+            if (config.globalCapture) {
+                clickEl = document; 
+            } 
+            clickEl.addEventListener('click', function() {
+                // Don't mess with the focus if there is an active selection
+                if (window.getSelection().toString()) {
+                    return false;
+                }
 
-            inner.classList.add(focusCSSClass);
-            inner.classList.remove(nofocusCSSClass);
-            if (isWebkit) {
-                focusWithoutScrolling(typer);
-            } else {
-                typer.classList.add('fixposition');
-                typer.focus();
-            }
-            scrollToBottom();
-            return false;
-        });
+                inner.classList.add(focusCSSClass);
+                inner.classList.remove(nofocusCSSClass);
+                if (isWebkit) {
+                    focusWithoutScrolling(typer);
+                } else {
+                    typer.classList.add('fixposition');
+                    typer.focus();
+                }
+                scrollToBottom();
+                return false;
+            });
+        })();
 
         ////////////////////////////////////////////////////////////////////////
         // Handle losing focus

@@ -1,17 +1,17 @@
 # js-console
 
-A terminal emulator for making command consoles written in JavaScript, [originally written in jQuery as jquery-console](https://github.com/chrisdone/jquery-console).
+A terminal emulator for making command consoles written in vanilla JavaScript, [originally written in jQuery as jquery-console](https://github.com/chrisdone/jquery-console). In addition to removing jQuery, I have removed all inline JS, and inline CSS styles, so this library will still work even with strict Content Security Policies.
 
 See
-[LICENSE](https://github.com/pnappa/jquery-console/blob/master/LICENSE)
+[LICENSE](https://github.com/pnappa/js-console/blob/master/LICENSE)
 for the license.
 
 ## Example
 
 For a list of examples, see
-[the demo file](https://github.com/pnappa/jquery-console/blob/master/demo.html),
+[the demo file](https://github.com/pnappa/js-console/blob/master/demo.html),
 and for a live demo, see
-[live demo](http://pat.sh/extras/jquery-console/) on my home page.
+[live demo](http://pat.sh/projects/js-console/) on my home page.
 
 Simple example:
 
@@ -85,6 +85,8 @@ Here are options which can be passed to `console`:
 | charInsertTrigger     | function | Predicate for whether to allow character insertion. `charInsertTrigger(char,line)` is called.
 | cancelHandle          | function | Handle a user-signaled interrupt.
 | fadeOnReset           | bool     | Whether to trigger a fade in/out when the console is reset.  Defaults to `true`.
+| globalCapture         | bool     | If the entire document is used to focus the console. Deafult `false`.
+| autocompleteSmart     | bool     | When enabled, the autocomplete will not expect suffixes, but instead possible completion options, and when matched will replace the last prefixable argument with the matching option. Example: `cat wo<tab>` with the single complete option `wow.txt`, will result in `cat wow.txt` when this setting is enabled, otherwise the result will be `cat wowow.txt`. Default `false`.
 
 ## Uses in the wild
 
