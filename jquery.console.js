@@ -31,6 +31,22 @@
 (function() {
     var isWebkit = !!~navigator.userAgent.indexOf(' AppleWebKit/');
 
+    // factor out the css magic strings, uglifyjs will compress these down
+    var cssPrefix = 'js-console-';
+    var cursorCSSClass = cssPrefix + 'cursor';
+    var innerCSSClass = cssPrefix + 'inner';
+    var typerCSSClass = cssPrefix + 'typer';
+    var welcomeCSSClass = cssPrefix + 'welcome';
+    var focusCSSClass = cssPrefix + 'focus';
+    var nofocusCSSClass = cssPrefix + 'nofocus';
+    var promptCSSClass = cssPrefix + 'prompt';
+    var promptBoxCSSClass = cssPrefix + 'prompt-box';
+    var promptLabelCSSClass = cssPrefix + 'prompt-label';
+    var messageCSSClass = cssPrefix + 'message';
+    var messageValueCSSClass = messageCSSClass + '-value';
+    var messageSuccessCSSClass = messageCSSClass + '-success';
+    var messageErrorCSSClass = messageCSSClass + '-error';
+
     // instantiate a console for a div element
     window.makeConsole = function(forEl, config) {
         ////////////////////////////////////////////////////////////////////////
@@ -97,23 +113,23 @@
             // return
             13: newLine,
         };
-        var cursor = '<span class="jquery-console-cursor">&nbsp;</span>';
+        var cursor = '<span class="' + cursorCSSClass + '">&nbsp;</span>';
 
         ////////////////////////////////////////////////////////////////////////
         // Globals
         //var container = element;
         var container = forEl;
         var inner = document.createElement('div');
-        inner.className = "jquery-console-inner";
+        inner.className = innerCSSClass;
 
         // erjiang: changed this from a text input to a textarea so we
         // can get pasted newlines
         var typer = document.createElement('textarea');
-        typer.className = 'jquery-console-typer';
+        typer.className = typerCSSClass;
         ["autocomplete", "autocorrect", "autocapitalize", "spellcheck"].forEach(function (el) {
             typer.setAttribute(el, "off");
         });
-        typer.className = "jquery-console-typer";
+        typer.className = typerCSSClass;
 
         // Prompt
         var promptBox;
@@ -150,15 +166,15 @@
             extern.promptLabel = config && config.promptLabel ? config.promptLabel : "> ";
             container.append(inner);
             inner.append(typer);
-            typer.classList.add('jquery-console-typer');
+            typer.classList.add(typerCSSClass);
             if (config.welcomeMessage)
-                message(config.welcomeMessage, 'jquery-console-welcome');
+                message(config.welcomeMessage, welcomeCSSClass);
             newPromptBox();
             if (config.autofocus) {
-                inner.classList.add('jquery-console-focus');
+                inner.classList.add(focusCSSClass);
                 typer.focus();
                 setTimeout(function() {
-                    inner.classList.add('jquery-console-focus');
+                    inner.classList.add(focusCSSClass);
                     typer.focus();
                 }, 100);
             }
@@ -230,7 +246,7 @@
 
         var focusConsole = function() {
             // XXX: why isn't the jquery-console-nofocus removed?
-            inner.classList.add('jquery-console-focus');
+            inner.classList.add(focusCSSClass);
             typer.focus();
         };
 
@@ -305,10 +321,10 @@
             enableInput();
 
             promptBox = document.createElement('div');
-            promptBox.classList.add('jquery-console-prompt-box');
+            promptBox.classList.add(promptBoxCSSClass);
 
             var label = document.createElement('span');
-            label.classList.add('jquery-console-prompt-label');
+            label.classList.add(promptLabelCSSClass);
 
 
             var labelText = extern.continuedPrompt ? continuedPromptLabel : extern.promptLabel;
@@ -317,7 +333,7 @@
 
             label.innerHTML = label.innerHTML.replace(' ', '&nbsp;');
             prompt = document.createElement('span');
-            prompt.classList.add('jquery-console-prompt');
+            prompt.classList.add(promptCSSClass);
             promptBox.append(prompt);
             inner.append(promptBox);
             updatePromptDisplay();
@@ -334,8 +350,8 @@
                 return false;
             }
 
-            inner.classList.add('jquery-console-focus');
-            inner.classList.remove('jquery-console-nofocus');
+            inner.classList.add(focusCSSClass);
+            inner.classList.remove(nofocusCSSClass);
             if (isWebkit) {
                 focusWithoutScrolling(typer);
             } else {
@@ -349,8 +365,8 @@
         ////////////////////////////////////////////////////////////////////////
         // Handle losing focus
         typer.addEventListener('blur', function() {
-            inner.classList.remove('jquery-console-focus');
-            inner.classList.add('jquery-console-nofocus');
+            inner.classList.remove(focusCSSClass);
+            inner.classList.add(nofocusCSSClass);
         });
 
         ////////////////////////////////////////////////////////////////////////
@@ -511,7 +527,7 @@
 
             var to_remove = [];
             for (var i = 0; i < inner.children.length; ++i) {
-                if (inner.children[i].classList.contains('jquery-console-prompt-box') || inner.children[i].classList.contains('jquery-console-message')) {
+                if (inner.children[i].classList.contains(promptBoxCSSClass) || inner.children[i].classList.contains(messageCSSClass)) {
                     to_remove.push(inner.children[i]);
                 }
             }
@@ -567,7 +583,7 @@
                         handleCommand();
                     }
                 } else {
-                    commandResult(ret, "jquery-console-message-error");
+                    commandResult(ret, messageErrorCSSClass);
                 }
             } else {
                 handleCommand();
@@ -610,11 +626,11 @@
                     } else {
                         commandResult(
                             'Command failed.',
-                            "jquery-console-message-error"
+                            messageErrorCSSClass 
                         );
                     }
                 } else if (typeof ret == "string") {
-                    commandResult(ret, "jquery-console-message-success");
+                    commandResult(ret, messageSuccessCSSClass);
                 } else if (typeof ret == 'object' && ret.length) {
                     commandResult(ret);
                 } else if (extern.continuedPrompt) {
@@ -665,7 +681,7 @@
         // Display a message
         function message(msg, className) {
             var mesg = document.createElement('div');
-            mesg.classList.add('jquery-console-message');
+            mesg.classList.add(messageCSSClass);
             if (className) {
                 mesg.classList.add(className);
             }
@@ -819,7 +835,7 @@
                             col = 0;
                         }
                     }
-                    commandResult(buffer, "jquery-console-message-value");
+                    commandResult(buffer, messageValueCSSClass);
                     extern.promptText(prompt);
                 }
             }
@@ -857,7 +873,7 @@
                         col = 0;
                     }
                 }
-                commandResult(buffer, "jquery-console-message-value");
+                commandResult(buffer, messageValueCSSClass);
                 extern.promptText(prompt);
             }
         };
@@ -892,7 +908,7 @@
                 var current = line.substring(column, column + 1);
                 if (current) {
                     current =
-                        '<span class="jquery-console-cursor">' +
+                        '<span class="' + cursorCSSClass + '">' +
                         htmlEncode(current) +
                         '</span>';
                 }
@@ -903,6 +919,8 @@
             scrollToBottom();
         };
 
+        // TODO: replace this, this isn't *safe*
+        // might have to refactor everywhere that uses this, and use TextNodes
         // Simple HTML encoding
         // Simply replace '<', '>' and '&'
         // TODO: Use jQuery's .html() trick, or grab a proper, fast
@@ -928,6 +946,8 @@
     }
 
     // Alternative method for focus without scrolling
+    // XXX: doesn't seem to work on iOS
+    // but, really should refactor the way input works to enable it to work on mobile.
     function focusElementWithoutScrolling(element) {
         var x = window.scrollX,
             y = window.scrollY;
