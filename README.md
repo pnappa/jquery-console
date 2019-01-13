@@ -1,4 +1,13 @@
+## UNDER CONSTRUCTION, BE CAREFUL
+ - [ ] Rename the CSS
+ - [ ] Rewrite the demo page
+ - [ ] Upload the demo/licensing to my site
+ - [ ] Add instructions
+ - [ ] Rename project, and remove all references to jQuery
+ - [ ] Tests..? Hard to do for this + diminishing return
+
 # js-console
+
 
 A terminal emulator for making command consoles written in vanilla JavaScript, [originally written in jQuery as jquery-console](https://github.com/chrisdone/jquery-console). In addition to removing jQuery, I have removed all inline JS, and inline CSS styles, so this library will still work even with strict Content Security Policies.
 
