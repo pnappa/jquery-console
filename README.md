@@ -1,25 +1,33 @@
-# jquery-console
+## UNDER CONSTRUCTION, BE CAREFUL
+ - [X] Rename the CSS
+ - [ ] Rewrite the demo page
+ - [ ] Upload the demo/licensing to my site
+ - [ ] Add instructions
+ - [ ] Rename project, and remove all references to jQuery
+ - [ ] Tests..? Hard to do for this + diminishing return
 
-A terminal emulator for making command consoles written in JavaScript
-with jQuery.
+# js-console
+
+A terminal emulator for making command consoles written in vanilla JavaScript, [originally written in jQuery as jquery-console](https://github.com/chrisdone/jquery-console). In addition to removing jQuery, I have removed all inline JS, and inline CSS styles, so this library will still work even with strict Content Security Policies.
 
 See
-[LICENSE](https://github.com/chrisdone/jquery-console/blob/master/LICENSE)
+[LICENSE](https://github.com/pnappa/js-console/blob/master/LICENSE)
 for the license.
 
 ## Example
 
 For a list of examples, see
-[the demo file](https://github.com/chrisdone/jquery-console/blob/master/demo.html),
+[the demo file](https://github.com/pnappa/js-console/blob/master/demo.html),
 and for a live demo, see
-[live demo](http://chrisdone.com/jquery-console/) on my home page.
+[live demo](http://pat.sh/projects/js-console/) on my home page.
 
 Simple example:
 
 ``` javascript
-var container = $('<div class="console">');
-$('body').append(container);
-var controller = container.console({
+var container = document.createElement('div');
+container.className = 'console';
+document.querySelector('body').append(container);
+var controller = window.makeConsole(container, {
   promptLabel: 'Demo> ',
   commandValidate:function(line){
     if (line == "") return false;
@@ -27,9 +35,9 @@ var controller = container.console({
   },
   commandHandle:function(line){
       return [{msg:"=> [12,42]",
-               className:"jquery-console-message-value"},
+               className:"js-console-message-value"},
               {msg:":: [a]",
-               className:"jquery-console-message-type"}]
+               className:"js-console-message-type"}]
   },
   autofocus:true,
   animateScroll:true,
@@ -46,23 +54,23 @@ Some CSS for your console:
 
 ``` css
 div.console { font-size: 14px }
-div.console div.jquery-console-inner
+div.console div.js-console-inner
  { width:900px; height:200px; background:#333; padding:0.5em;
    overflow:auto }
-div.console div.jquery-console-prompt-box
+div.console div.js-console-prompt-box
  { color:#fff; font-family:monospace; }
-div.console div.jquery-console-focus span.jquery-console-cursor
+div.console div.js-console-focus span.js-console-cursor
  { background:#fefefe; color:#333; font-weight:bold }
-div.console div.jquery-console-message-error
+div.console div.js-console-message-error
  { color:#ef0505; font-family:sans-serif; font-weight:bold;
    padding:0.1em; }
-div.console div.jquery-console-message-value
+div.console div.js-console-message-value
  { color:#1ad027; font-family:monospace;
    padding:0.1em; }
-div.console div.jquery-console-message-type
+div.console div.js-console-message-type
  { color:#52666f; font-family:monospace;
    padding:0.1em; }
-div.console span.jquery-console-prompt-label { font-weight:bold }
+div.console span.js-console-prompt-label { font-weight:bold }
 ```
 
 ## Usage options
@@ -85,6 +93,8 @@ Here are options which can be passed to `console`:
 | charInsertTrigger     | function | Predicate for whether to allow character insertion. `charInsertTrigger(char,line)` is called.
 | cancelHandle          | function | Handle a user-signaled interrupt.
 | fadeOnReset           | bool     | Whether to trigger a fade in/out when the console is reset.  Defaults to `true`.
+| globalCapture         | bool     | If the entire document is used to focus the console. Deafult `false`.
+| autocompleteSmart     | bool     | When enabled, the autocomplete will not expect suffixes, but instead possible completion options, and when matched will replace the last prefixable argument with the matching option. Example: `cat wo<tab>` with the single complete option `wow.txt`, will result in `cat wow.txt` when this setting is enabled, otherwise the result will be `cat wowow.txt`. Default `false`.
 
 ## Uses in the wild
 
