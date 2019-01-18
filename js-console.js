@@ -184,6 +184,8 @@
             extern.report = report;
             extern.showCompletion = showCompletion;
             extern.clearScreen = clearScreen;
+            extern.disableInput = disableInput;
+            extern.enableInput = enableInput;
         })();
 
 
@@ -361,7 +363,7 @@
                 inner.classList.add(focusCSSClass);
                 inner.classList.remove(nofocusCSSClass);
                 if (isWebkit) {
-                    focusWithoutScrolling(typer);
+                    focusElementWithoutScrolling(typer);
                 } else {
                     typer.classList.add('fixposition');
                     typer.focus();

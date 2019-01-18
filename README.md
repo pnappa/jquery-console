@@ -3,7 +3,7 @@
  - [ ] Rewrite the demo page
  - [ ] Upload the demo/licensing to my site
  - [ ] Add instructions
- - [ ] Rename project, and remove all references to jQuery
+ - [X] Rename project, and remove all references to jQuery
  - [ ] Tests..? Hard to do for this + diminishing return
 
 # js-console
