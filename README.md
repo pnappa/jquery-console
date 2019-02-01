@@ -7,6 +7,7 @@
  - [ ] Tests..? Hard to do for this + diminishing return
 
 # js-console
+![logo](https://raw.github.com/pnappa/js-console/master/extra/logo2.png)
 
 A terminal emulator for making command consoles written in vanilla JavaScript, [originally written in jQuery as jquery-console](https://github.com/chrisdone/jquery-console). In addition to removing jQuery, I have removed all inline JS, and inline CSS styles, so this library will still work even with strict Content Security Policies.
 
