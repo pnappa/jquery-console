@@ -141,6 +141,7 @@
         var restoreText = '';
         var continuedText = '';
         var fadeOnReset = config.fadeOnReset !== undefined ? config.fadeOnReset : true;
+        var scrollType = config && config.scrollPage ? "pagescroll" : "divscroll";
         // Prompt history stack
         var history = [];
         var ringn = 0;
@@ -603,7 +604,11 @@
 
         // Scroll to the bottom of the view
         function scrollToBottom() {
-            inner.setAttribute('scrollTop', inner.getAttribute('scrollHeight'));
+            if (scrollType === "pagescroll") {
+                window.scrollTo(0, document.body.scrollHeight);
+            } else if (scrollType === "divscroll") {
+                inner.setAttribute('scrollTop', inner.getAttribute('scrollHeight'));
+            }
         };
 
         function cancelExecution() {
