@@ -194,7 +194,6 @@
         function elementAnimate(el, animationClass, callback, keepcallback) {
             // this is called when the fade finishes
             var endAnimFn = function () {
-                console.log("endanim");
                 if (!keepcallback) {
                     el.removeEventListener('animationend', endAnimFn);
                 }
@@ -299,7 +298,6 @@
 
                 focused = false;
                 a.addEventListener('click', function() {
-                    console.log('woo');
                     n.parentElement.removeChild(n);
                     inner.classList.remove('halfvisible');
                 });
